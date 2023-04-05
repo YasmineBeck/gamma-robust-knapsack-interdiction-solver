@@ -1,5 +1,5 @@
 # Introduction
-This file is part of the code used for the computational study in the paper
+The repository contains the code accompanying the paper
 
 &emsp; _Exact Methods for Discrete Gamma-Robust Interdiction Problems with an Application to the Bilevel Knapsack Problem_
 
