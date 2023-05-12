@@ -61,7 +61,7 @@ def lifted_cut_separation(follower_var, leader_var, profits,
                 coef = ((profits[candidates[candidate]]
                          - deviations[candidates[candidate]]
                          - profits[one]
-                         + deviations[candidates[candidate]])\
+                         + deviations[candidates[candidate]])
                         *(1 - leader_var[candidates[candidate]]))
                 coefs.append(coef)
             max_coef = np.argmax(coefs)
@@ -97,8 +97,7 @@ def make_maximal(array_var, profits, weights, budget,
     array_var = array_var[revert_order]
     return array_var 
 
-def solve_lower_level(leader_var, profits,
-                      follower_weights, follower_budget):
+def solve_lower_level(leader_var, profits, follower_weights, follower_budget):
     # Solves the parameterized lower-level problem in its nominal form.
     size = len(profits)
     
@@ -109,14 +108,16 @@ def solve_lower_level(leader_var, profits,
     var = model.addVars(size, vtype=GRB.BINARY)
     
     # Set lower-level objective.
-    model.setObjective(gp.quicksum(profits[idx]*var[idx]
-                                   for idx in range(size)),
-                       GRB.MAXIMIZE)
+    model.setObjective(
+        gp.quicksum(profits[idx]*var[idx] for idx in range(size)),
+        GRB.MAXIMIZE
+    )
     
     # Add budget constraint of the follower.
-    model.addConstr(gp.quicksum(follower_weights[idx]*var[idx]
-                                for idx in range(size))
-                    <= follower_budget)
+    model.addConstr(
+        gp.quicksum(follower_weights[idx]*var[idx] for idx in range(size))
+        <= follower_budget
+    )
     
     # Add interdiction constraints.
     for idx in range(size):
@@ -146,15 +147,20 @@ def solve_extended_lower_level(leader_var, gamma, profits, deviations,
     var_t = model.addVar(vtype=GRB.CONTINUOUS, lb=0.0)
     
     # Set lower-level objective.
-    model.setObjective(-gamma*var_t\
-                       + gp.quicksum(profits[idx]*var_y[idx] - var_z[idx]
-                                     for idx in range(size)),
-                       GRB.MAXIMIZE)
+    model.setObjective(
+        -gamma*var_t + gp.quicksum(
+            profits[idx]*var_y[idx] - var_z[idx] for idx in range(size)
+        ),
+        GRB.MAXIMIZE
+    )
 
     # Add budget constraint of the follower.
-    model.addConstr(gp.quicksum(follower_weights[idx]*var_y[idx]
-                                for idx in range(size))
-                                <= follower_budget)
+    model.addConstr(
+        gp.quicksum(
+            follower_weights[idx]*var_y[idx] for idx in range(size)
+        )
+        <= follower_budget
+    )
 
     for idx in range(size):
         # Add interdiction constraints.

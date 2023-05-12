@@ -51,8 +51,7 @@ class HeuristicWarmstart(object):
             followers = [f for f in range(self.gamma, self.size + 2)]
             
             # Account for Python indexing starting at 0.
-            followers = [followers[idx] - 1\
-                         for idx in range(len(followers))]
+            followers = [followers[idx] - 1 for idx in range(len(followers))]
             
             if ((self.gamma == 0) or ((self.deviations <= 0).all())):
                 sol, obj = self._solve_subprob(model, followers[0])
@@ -79,22 +78,29 @@ class HeuristicWarmstart(object):
         var_z = model.addVars(self.size, vtype=GRB.CONTINUOUS, lb=0.0)
         var_t = model.addVar(vtype=GRB.CONTINUOUS, lb=0.0)
 
-        model.setObjective(gp.quicksum(self.profits[idx]*(1 - leader_var[idx]) + var_z[idx]
-                                       for idx in range(self.size))\
-                           + self.gamma*var_t,
-                           GRB.MINIMIZE)
+        model.setObjective(
+            gp.quicksum(self.profits[idx]*(1 - leader_var[idx]) + var_z[idx]
+                        for idx in range(self.size))
+            + self.gamma*var_t,
+            GRB.MINIMIZE
+        )
 
-        model.addConstr(gp.quicksum(self.leader_weights[idx]*leader_var[idx]
-                                    for idx in range(self.size))
-                        <= self.leader_budget)
+        model.addConstr(
+            gp.quicksum(self.leader_weights[idx]*leader_var[idx]
+                        for idx in range(self.size))
+            <= self.leader_budget
+        )
         
-        model.addConstr(gp.quicksum(self.follower_weights[idx]*(1 - leader_var[idx])
-                                    for idx in range(self.size))
-                        <= self.follower_budget)
+        model.addConstr(
+            gp.quicksum(self.follower_weights[idx]*(1 - leader_var[idx])
+                        for idx in range(self.size))
+            <= self.follower_budget
+        )
 
         for idx in range(self.size):
-            model.addConstr(var_z[idx] + var_t
-                            >= self.deviations[idx]*(1 - leader_var[idx]))
+            model.addConstr(
+                var_z[idx] + var_t >= self.deviations[idx]*(1 - leader_var[idx])
+            )
 
         model.Params.Outputflag = False
         
@@ -114,14 +120,18 @@ class HeuristicWarmstart(object):
             var[idx] = model.addVar(vtype=GRB.BINARY, name="var_%s" % idx)
 
         # Add leader's budget constraint.
-        model.addConstr(gp.quicksum(self.leader_weights[idx]*var[idx]
-                                    for idx in range(self.size))
-                        <= self.leader_budget)
+        model.addConstr(
+            gp.quicksum(self.leader_weights[idx]*var[idx]
+                        for idx in range(self.size))
+            <= self.leader_budget
+        )
 
         # Add follower's budget constraint.
-        model.addConstr(gp.quicksum(self.follower_weights[idx]*(1 - var[idx])
-                                    for idx in range(self.size))
-                        <= self.follower_budget)
+        model.addConstr(
+            gp.quicksum(self.follower_weights[idx]*(1 - var[idx])
+                        for idx in range(self.size))
+            <= self.follower_budget
+        )
 
         # Add dominance inequalities.
         idx_set_1, idx_set_2 = get_dominance(
@@ -132,8 +142,9 @@ class HeuristicWarmstart(object):
         )
         
         for dominance in range(len(idx_set_1)):
-            model.addConstr(var[idx_set_2[dominance]]
-                            <= var[idx_set_1[dominance]])
+            model.addConstr(
+                var[idx_set_2[dominance]] <= var[idx_set_1[dominance]]
+            )
 
         model.update()
         return model
@@ -143,10 +154,12 @@ class HeuristicWarmstart(object):
         for idx in range(self.size):
             var[idx] = model.getVarByName("var_%s" %idx)
 
-        model.setObjective(-self.gamma*self.deviations[follower]\
-                           + gp.quicksum(self.modified_profits[follower][idx]*(1 - var[idx])
-                                         for idx in range(self.size)),
-                           GRB.MINIMIZE)
+        model.setObjective(
+            -self.gamma*self.deviations[follower]
+            + gp.quicksum(self.modified_profits[follower][idx]*(1 - var[idx])
+                          for idx in range(self.size)),
+            GRB.MINIMIZE
+        )
 
         model.Params.OutputFlag = False
         model.optimize()

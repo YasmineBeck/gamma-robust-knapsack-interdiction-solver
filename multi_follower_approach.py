@@ -117,10 +117,11 @@ def interdiction_cuts_callback(model, where):
                     consts.append(const)
                     violations.append(follower_obj - aux_var)
                 else:
-                    model.cbLazy(model._aux_var
-                                 >= const\
-                                 + gp.quicksum(coef[idx]*(1 - model._var[idx])
-                                               for idx in range(model._size)))
+                    model.cbLazy(
+                        model._aux_var
+                        >= const + gp.quicksum(coef[idx]*(1 - model._var[idx])
+                                               for idx in range(model._size))
+                    )
                     added_cuts += 1
                     model._generated_cuts += 1
 
@@ -140,10 +141,11 @@ def interdiction_cuts_callback(model, where):
         # Add most violated cut.
         if ((model._cut_strategy == 1) and (len(violations) > 0)):
             max_viol = np.argmax(violations)
-            model.cbLazy(model._aux_var
-                         >= consts[max_viol]\
-                         + gp.quicksum(coefs[max_viol][idx]*(1 - model._var[idx])
-                                       for idx in range(model._size)))
+            model.cbLazy(
+                model._aux_var
+                >= consts[max_viol]
+                + gp.quicksum(coefs[max_viol][idx]*(1 - model._var[idx])
+                              for idx in range(model._size)))
         end_time = time() - start_time
         cut_sel_time = time() - cut_sel_start_time
         
@@ -173,7 +175,7 @@ class MultiFollowerModel(object):
         self.follower_budget = instance_data_dict["follower budget"]
         self.gamma = instance_data_dict["gamma"]
         self.deviations = instance_data_dict["deviations"]
-
+        self.time_limit = 3600
         self.cut_type = cut_type
         self.dominance_ineq = dominance_ineq
         self.max_pack = max_pack
@@ -188,7 +190,7 @@ class MultiFollowerModel(object):
             self.followers = [s for s in range(self.gamma, self.size + 2)]
             
             # Account for Python indexing starting at 0.
-            self.followers = [self.followers[idx] - 1\
+            self.followers = [self.followers[idx] - 1
                               for idx in range(len(self.followers))]
 
         self.follower_cnt = len(self.followers)
@@ -200,7 +202,7 @@ class MultiFollowerModel(object):
         self._warmstart_method(var, aux_var)
         
         model.Params.LazyConstraints = 1
-        model.Params.TimeLimit = 3600
+        model.Params.TimeLimit = self.time_limit
         
         model.optimize(interdiction_cuts_callback)
 
@@ -245,10 +247,12 @@ class MultiFollowerModel(object):
         aux_var = model.addVar(vtype=GRB.CONTINUOUS, lb=0.0, name="aux_var")
     
         # Add budget constraint of the leader.
-        model.addConstr(gp.quicksum(self.leader_weights[idx]*var[idx]
-                                    for idx in range(self.size))
-                        <= self.leader_budget,
-                        name="interdiction_budget_constr")
+        model.addConstr(
+            gp.quicksum(self.leader_weights[idx]*var[idx]
+                        for idx in range(self.size))
+            <= self.leader_budget,
+            name="interdiction_budget_constr"
+        )
     
         # Add dominance inequalities.
         if self.dominance_ineq > 0:
@@ -260,9 +264,11 @@ class MultiFollowerModel(object):
             )
 
             for idx in range(len(idx_set_1)):
-                model.addConstr(var[idx_set_2[idx]] <= var[idx_set_1[idx]],
-                                name="dominance_inequality_%s_%s"
-                                % (str(idx_set_1[idx]), str(idx_set_2[idx])))
+                model.addConstr(
+                    var[idx_set_2[idx]] <= var[idx_set_1[idx]],
+                    name="dominance_inequality_%s_%s"
+                    % (str(idx_set_1[idx]), str(idx_set_2[idx]))
+                )
                 
         # Set objective function.
         model.setObjective(aux_var, GRB.MINIMIZE)

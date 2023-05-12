@@ -22,13 +22,15 @@ class InstanceDataBuilder(object):
                  instance_data_file,
                  conservatism,
                  uncertainty=None,
-                 deviations=None):
+                 deviations=None,
+                 only_positive_profits=True):
         self.instance_data_file = instance_data_file
         self.conservatism = conservatism
         if ((conservatism < 0) or (conservatism > 1)):
             raise ValueError("Level of conservatism must be between 0 and 1.")
         self.uncertainty = uncertainty
         self.deviations = deviations
+        self.only_positive_profits = only_positive_profits
 
     def build_multi_follower_instance(self):
         # Read (nominal) instance data.
@@ -43,21 +45,17 @@ class InstanceDataBuilder(object):
         instance_data["deviations"] = deviations
         
         # Update instance data using new order of indices.
-        profits, leader_weights, follower_weights\
-            = self._sort_data(instance_data, order)
-        
-        if (follower_weights < 0).any():
+        keys = ["profits", "leader weights", "follower weights"]
+        for key in keys:
+            if key in instance_data:
+                instance_data[key] = instance_data[key][order]
+    
+        if (instance_data["follower weights"] < 0).any():
             raise ValueError("Follower weights must be positive.")
-
-        instance_data["profits"] = profits
-        instance_data["leader weights"] = leader_weights
-        instance_data["follower weights"] = follower_weights
         
         # Construct modified profits.
-        modified_profits, deviations\
+        instance_data["modified profits"]\
             = self._add_modified_profits(instance_data)
-        instance_data["modified profits"] = modified_profits
-        instance_data["deviations"] = deviations
         return instance_data
 
     def build_extended_form_instance(self):
@@ -73,11 +71,10 @@ class InstanceDataBuilder(object):
         with open(self.instance_data_file, "r") as file:
             data_from_file = file.read()
         instance_data = json.loads(data_from_file)
-        instance_data["profits"] = np.asarray(instance_data["profits"])
-        instance_data["leader weights"]\
-            = np.asarray(instance_data["leader weights"])
-        instance_data["follower weights"]\
-            = np.asarray(instance_data["follower weights"])
+        keys = ["profits", "leader weights", "follower weights"]
+        for key in keys:
+            if key in instance_data:
+                instance_data[key] = np.asarray(instance_data[key])
 
         if len(instance_data["follower weights"]) != instance_data["size"]:
             raise ValueError("Dimensions do not match (follower weights).")
@@ -120,12 +117,6 @@ class InstanceDataBuilder(object):
         deviations = deviations[order]
         deviations = np.append(deviations, 0)
         return deviations, order
-
-    def _sort_data(self, instance_data, order):
-        profits = instance_data["profits"]
-        leader_weights = instance_data["leader weights"]
-        follower_weights = instance_data["follower weights"]
-        return profits[order], leader_weights[order], follower_weights[order]
     
     def _add_modified_profits(self, instance_data):
         size = instance_data["size"]
@@ -140,6 +131,7 @@ class InstanceDataBuilder(object):
             for idx in range(follower, size):
                 modified_profits[follower, idx] = profits[idx]
 
-        positive_modified_profits\
-            = np.where(modified_profits > 0, modified_profits, 0)
-        return positive_modified_profits, deviations
+        if self.only_positive_profits:
+            modified_profits\
+                = np.where(modified_profits > 0, modified_profits, 0)
+        return modified_profits

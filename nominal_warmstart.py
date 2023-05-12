@@ -52,9 +52,11 @@ def interdiction_cuts_callback(model, where):
                                        - model._profits[set_a[idx]])
                         
             if aux_var + tol < follower_obj:
-                model.cbLazy(model._aux_var
-                             >= gp.quicksum(coef[idx]*(1 - model._leader_var[idx])
-                                            for idx in range(model._size)))
+                model.cbLazy(
+                        model._aux_var
+                        >= gp.quicksum(coef[idx]*(1 - model._leader_var[idx])
+                                       for idx in range(model._size))
+                )
 
 class NominalWarmstart(object):
     """
@@ -74,6 +76,7 @@ class NominalWarmstart(object):
         self.follower_budget = follower_budget
         self.follower_weights = follower_weights
         self.profits = profits
+        self.time_limit = 3600
                 
     def solve(self, sol=None, obj=None):
         # Build model.
@@ -86,9 +89,11 @@ class NominalWarmstart(object):
         model.setObjective(aux_var, GRB.MINIMIZE)
 
         # Add leader's budget constraint.
-        model.addConstr(gp.quicksum(self.leader_weights[idx]*leader_var[idx]
-                                    for idx in range(self.size))
-                        <= self.leader_budget)
+        model.addConstr(
+                gp.quicksum(self.leader_weights[idx]*leader_var[idx]
+                            for idx in range(self.size))
+                <= self.leader_budget
+        )
 
         # Add dominance inequalities.
         idx_set_1, idx_set_2 = get_dominance(
@@ -98,8 +103,10 @@ class NominalWarmstart(object):
         )
         
         for dominance in range(len(idx_set_1)):
-            model.addConstr(leader_var[idx_set_2[dominance]]
-                            <= leader_var[idx_set_1[dominance]])
+            model.addConstr(
+                    leader_var[idx_set_2[dominance]]
+                    <= leader_var[idx_set_1[dominance]]
+            )
 
         model._leader_var = leader_var
         model._aux_var = aux_var
@@ -109,7 +116,7 @@ class NominalWarmstart(object):
         model._follower_budget = self.follower_budget
 
         model.Params.LazyConstraints = 1
-        model.Params.TimeLimit = 3600
+        model.Params.TimeLimit = self.time_limit
         model.Params.OutputFlag = False
         
         model.optimize(interdiction_cuts_callback)

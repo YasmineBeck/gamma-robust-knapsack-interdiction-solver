@@ -81,10 +81,11 @@ def interdiction_cuts_callback(model, where):
                                        + model._deviations[set_a[idx]])
                         
         if aux_var + tol < follower_obj:
-            model.cbLazy(model._aux_var
-                         >= const\
-                         + gp.quicksum(coef[idx]*(1 - model._var[idx])
-                                       for idx in range(model._size)))
+            model.cbLazy(
+                model._aux_var
+                >= const + gp.quicksum(coef[idx]*(1 - model._var[idx])
+                                       for idx in range(model._size))
+            )
             model._generated_cuts += 1
         end_time = time() - start_time
         model._cut_generation_times.append(end_time)
@@ -108,7 +109,7 @@ class ExtendedFormModel(object):
         self.follower_budget = instance_data_dict["follower budget"]
         self.gamma = instance_data_dict["gamma"]
         self.deviations = instance_data_dict["deviations"]
-
+        self.time_limit = 3600
         self.cut_type = cut_type
         self.dominance_ineq = dominance_ineq
         self.max_pack = max_pack
@@ -121,7 +122,7 @@ class ExtendedFormModel(object):
         self._warmstart_method(var, aux_var)
 
         model.Params.LazyConstraints = 1
-        model.Params.TimeLimit = 3600
+        model.Params.TimeLimit = self.time_limit
         
         model.optimize(interdiction_cuts_callback)
 
@@ -154,10 +155,12 @@ class ExtendedFormModel(object):
         aux_var = model.addVar(vtype=GRB.CONTINUOUS, lb=0.0, name="aux_var")
     
         # Add budget constraint of the leader.
-        model.addConstr(gp.quicksum(self.leader_weights[idx]*var[idx]
-                                    for idx in range(self.size))
-                        <= self.leader_budget,
-                        name="interdiction_budget_constr")
+        model.addConstr(
+            gp.quicksum(self.leader_weights[idx]*var[idx]
+                        for idx in range(self.size))
+            <= self.leader_budget,
+            name="interdiction_budget_constr"
+        )
     
         # Add dominance inequalities.
         if self.dominance_ineq > 0:
@@ -169,9 +172,11 @@ class ExtendedFormModel(object):
             )
             
             for idx in range(len(idx_set_1)):
-                model.addConstr(var[idx_set_2[idx]] <= var[idx_set_1[idx]],
-                                name="dominance_inequality_%s_%s"
-                                % (str(idx_set_1[idx]), str(idx_set_2[idx])))
+                model.addConstr(
+                    var[idx_set_2[idx]] <= var[idx_set_1[idx]],
+                    name="dominance_inequality_%s_%s"
+                    % (str(idx_set_1[idx]), str(idx_set_2[idx]))
+                )
                 
         # Set objective function.
         model.setObjective(aux_var, GRB.MINIMIZE)
