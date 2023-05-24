@@ -84,6 +84,8 @@ Caprara et al. (2016) would be given in a simple text file containing:
 "follower budget": 4  
 }
 
+The deterministic instances that are used in the computational study of the paper are included in the `nominal-instance-data` directory.
+
 To account for uncertain objective function coefficients, the following
 specifications may be used:
 
