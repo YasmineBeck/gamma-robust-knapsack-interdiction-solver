@@ -3,7 +3,7 @@ The repository contains the code accompanying the paper
 
 &emsp; _Exact Methods for Discrete Gamma-Robust Interdiction Problems with an Application to the Bilevel Knapsack Problem_
 
-by Yasmine Beck, Ivana Ljubic, and Martin Schmidt (2021)
+by Yasmine Beck, Ivana Ljubic, and Martin Schmidt (2023)
 (https://optimization-online.org/2021/11/8678/).
 
 # Dependencies
