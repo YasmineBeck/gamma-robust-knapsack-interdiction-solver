@@ -127,6 +127,9 @@ Takes a nominal bilevel knapsack interdiction instance and returns a robustified
 **multi_follower_approach.py**  
 Solves a bilevel knapsack interdiction problem using the multi-follower approach.
 
+**nominal-instance-data**  
+Contains all nominal instances that are used for the computational study of the paper.
+
 **nominal_warmstart.py**  
 Solves the nominal knapsack interdiction problem. The solution can be used to warmstart the methods.
 
