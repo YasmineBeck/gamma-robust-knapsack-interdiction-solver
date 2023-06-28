@@ -186,8 +186,10 @@ class MultiFollowerModel(object):
         if self.gamma < 1:
             self.followers = [0]
         else:
-            # Reduction of sub-problems as in Alvarez-Miranda et al. (2013).
-            self.followers = [s for s in range(self.gamma, self.size + 2)]
+            # Reduction of sub-problems according to Lee and Kwon (2014).
+            max_idx = int(np.ceil((self.size - self.gamma)/2)) + 1
+            self.followers = [self.gamma + 2*idx - 1 for idx in range(1,max_idx)]
+            self.followers.append(self.size + 1)
             
             # Account for Python indexing starting at 0.
             self.followers = [self.followers[idx] - 1
