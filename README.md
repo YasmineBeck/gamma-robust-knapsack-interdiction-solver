@@ -4,7 +4,7 @@ The repository contains the code accompanying the paper
 &emsp; _Exact Methods for Discrete Gamma-Robust Interdiction Problems with an Application to the Bilevel Knapsack Problem_
 
 by Yasmine Beck, Ivana Ljubic, and Martin Schmidt (2023)
-(https://optimization-online.org/2021/11/8678/).
+(https://link.springer.com/article/10.1007/s12532-023-00244-6).
 
 # Dependencies
 The methods are implemented in Python 3.6.9 and Gurobi 9.1.2 
