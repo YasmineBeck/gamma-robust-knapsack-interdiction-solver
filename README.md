@@ -138,3 +138,16 @@ Builds and solves a Gamma-robust knapsack interdiction problem using the extende
 
 **solve_instance_multi_follower.py**  
 Builds and solves a Gamma-robust knapsack interdiction problem using the multi-follower approach.
+
+# Computational Results
+In what follows, we present new and corrected tables and figures that depict the numerical results of [the paper](https://link.springer.com/article/10.1007/s12532-023-00244-6) (see Section 4) in a different way.
+
+First, we present new ECDF plots in which instances that cannot be solved within the time limit are now excluded, which has not been done before. This leads to a slight upward shift of the curves in the ECDF plots.
+
+Second, we now exclude the instances that cannot be solved within the time limit when generating the statistical data for our tables. Previously, these instances have been accounted for by taking the respective quantities, such as node count and running time, at the time limit.
+
+Third, we correct the labeling of the log-scaled $x$-axis in the ECDF plots with regard to the (idealized) running times. The labels are now depicted by a factor of 10 higher than in the published article.
+
+Fourth and finally, we now split Table 6 into separate tables for each uncertainty parameterization.
+
+Despite the aforementioned aspects, we would like to emphasize that they do not impact the overall conclusions drawn from our computational study. Since the evaluation of our proposed methods has been conducted on a qualitative basis, our key findings remain consistent with those in the published article. We provide the new figures and tables in `corrected-figures-and-tables.pdf`.
