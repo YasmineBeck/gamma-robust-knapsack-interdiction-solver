@@ -140,7 +140,7 @@ Builds and solves a Gamma-robust knapsack interdiction problem using the extende
 Builds and solves a Gamma-robust knapsack interdiction problem using the multi-follower approach.
 
 # Computational Results
-In what follows, we present new and corrected tables and figures that depict the numerical results of [the paper](https://link.springer.com/article/10.1007/s12532-023-00244-6) (see Section 4) in a different way.
+In [new-figures-and-tables.pdf](./new-figures-and-tables.pdf), we provide new and corrected tables and figures that depict the numerical results of [the paper](https://link.springer.com/article/10.1007/s12532-023-00244-6) (see Section 4) in a different way.
 
 First, we present new ECDF plots in which instances that cannot be solved within the time limit are now excluded, which has not been done before. This leads to a slight upward shift of the curves in the ECDF plots.
 
@@ -150,4 +150,4 @@ Third, we correct the labeling of the log-scaled $x$-axis in the ECDF plots with
 
 Fourth and finally, we now split Table 6 into separate tables for each uncertainty parameterization.
 
-Despite the aforementioned aspects, we would like to emphasize that they do not impact the overall conclusions drawn from our computational study. Since the evaluation of our proposed methods has been conducted on a qualitative basis, our key findings remain consistent with those in the published article. In [new-figures-and-tables.pdf](./new-figures-and-tables.pdf), we provide the new figures and tables.
+Despite the aforementioned aspects, we would like to emphasize that they do not impact the overall conclusions drawn from our computational study. Since the evaluation of our proposed methods has been conducted on a qualitative basis, our key findings remain consistent with those in the published article.
