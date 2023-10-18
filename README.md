@@ -84,7 +84,7 @@ Caprara et al. (2016) would be given in a simple text file containing:
 "follower budget": 4  
 }
 
-The deterministic instances that are used in the computational study of the paper are included in the `nominal-instance-data` directory.
+The deterministic instances that are used in the computational study of the paper are included in the [nominal-instance-data](./nominal-instance-data/) directory.
 
 To account for uncertain objective function coefficients, the following
 specifications may be used:
@@ -150,4 +150,4 @@ Third, we correct the labeling of the log-scaled $x$-axis in the ECDF plots with
 
 Fourth and finally, we now split Table 6 into separate tables for each uncertainty parameterization.
 
-Despite the aforementioned aspects, we would like to emphasize that they do not impact the overall conclusions drawn from our computational study. Since the evaluation of our proposed methods has been conducted on a qualitative basis, our key findings remain consistent with those in the published article. We provide the new figures and tables in `corrected-figures-and-tables.pdf`.
+Despite the aforementioned aspects, we would like to emphasize that they do not impact the overall conclusions drawn from our computational study. Since the evaluation of our proposed methods has been conducted on a qualitative basis, our key findings remain consistent with those in the published article. In [new-figures-and-tables.pdf](./new-figures-and-tables.pdf), we provide the new figures and tables.
