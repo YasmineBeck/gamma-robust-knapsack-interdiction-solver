@@ -77,6 +77,7 @@ class NominalWarmstart(object):
         self.follower_weights = follower_weights
         self.profits = profits
         self.time_limit = 3600
+        self.threads = 4
                 
     def solve(self, sol=None, obj=None):
         # Build model.
@@ -118,6 +119,7 @@ class NominalWarmstart(object):
         model.Params.LazyConstraints = 1
         model.Params.TimeLimit = self.time_limit
         model.Params.OutputFlag = False
+        model.Params.Threads = self.threads
         
         model.optimize(interdiction_cuts_callback)
 

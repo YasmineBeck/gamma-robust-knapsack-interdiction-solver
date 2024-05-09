@@ -38,11 +38,15 @@ class HeuristicWarmstart(object):
         self.modified_profits = modified_profits
         self.deviations = deviations
         self.gamma = gamma
+        self.time_limit = 3600
+        self.threads = 4
 
     def solve_multi_follower(self, sol=None, obj=None):
         model = self._build_feasibility_problem()
 
         model.Params.OutputFlag = False
+        model.Params.TimeLimit = self.time_limit
+        model.Params.Threads = self.threads
 
         # Check whether the modified leader's problem is feasible.
         model.optimize()
@@ -103,6 +107,8 @@ class HeuristicWarmstart(object):
             )
 
         model.Params.Outputflag = False
+        model.Params.TimeLimit = self.time_limit
+        model.Params.Threads = self.threads
         
         model.optimize()
         if model.status == GRB.OPTIMAL:
@@ -162,6 +168,9 @@ class HeuristicWarmstart(object):
         )
 
         model.Params.OutputFlag = False
+        model.Params.TimeLimit = self.time_limit
+        model.Params.Threads = self.threads
+        
         model.optimize()
 
         sol = [var.x for var in model.getVars()]

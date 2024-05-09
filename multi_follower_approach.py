@@ -176,6 +176,7 @@ class MultiFollowerModel(object):
         self.gamma = instance_data_dict["gamma"]
         self.deviations = instance_data_dict["deviations"]
         self.time_limit = 3600
+        self.threads = 4
         self.cut_type = cut_type
         self.dominance_ineq = dominance_ineq
         self.max_pack = max_pack
@@ -205,6 +206,7 @@ class MultiFollowerModel(object):
         
         model.Params.LazyConstraints = 1
         model.Params.TimeLimit = self.time_limit
+        model.Params.Threads = self.threads
         
         model.optimize(interdiction_cuts_callback)
 

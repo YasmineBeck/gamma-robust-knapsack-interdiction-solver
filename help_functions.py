@@ -124,6 +124,7 @@ def solve_lower_level(leader_var, profits, follower_weights, follower_budget):
         model.addConstr(var[idx] <= 1 - leader_var[idx])
         
     model.Params.OutputFlag = False
+    model.Params.Threads = 4
 
     # Optimize.
     model.optimize()
@@ -170,6 +171,7 @@ def solve_extended_lower_level(leader_var, gamma, profits, deviations,
         model.addConstr(var_t + var_z[idx] >= deviations[idx]*var_y[idx])
 
     model.Params.OutputFlag = False
+    model.Params.Threads = 4
 
     # Optimize.
     model.optimize()
